@@ -76,14 +76,16 @@ Your device_name will be "X" (what's after the "select.")
 
 ```yaml
 type: custom:samsung-washer-card
-device_name: washing_machine  # Replace with your device name
+# Use either device_name (LG/Samsung) or the legacy entity_prefix
+device_name: washing_machine
+# entity_prefix: washer  # optional legacy prefix
 ```
 
 #### Full Configuration
 
 ```yaml
 type: custom:samsung-washer-card
-device_name: washing_machine
+device_name: washing_machine  # or: entity_prefix: washer
 icon: "mdi:washing-machine"  # Custom icon (emoji or MDI)
 complete_status_for_x_hours: 2  # Hours to show "completed" status
 grid_columns: 12  # Full width (1-12)
@@ -97,6 +99,7 @@ max_rows: 20      # Maximum height
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `device_name` | string | **Required** | Name of your washer device (LG or Samsung) |
+| `entity_prefix` | string | — | Legacy prefix used by older configurations; falls back to `device_name` when provided |
 | `icon` | string | `🧺` | Icon for the card header (emoji or `mdi:icon-name`) |
 | `complete_status_for_x_hours` | number | `2` | Hours to show green "completed" status light |
 

@@ -1033,7 +1033,7 @@ class SamsungWasherCard extends HTMLElement {
     }
 
     // Get device name from config
-    const deviceName = this.config.device_name || 'washing_machine';
+    const deviceName = this.config.device_name || this.config.entity_prefix || 'washing_machine';
     
     // Get all sensor data
     const sensorData = EntityHelpers.getAllSensorData(hass, deviceName);
