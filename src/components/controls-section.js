@@ -11,9 +11,12 @@ export function createControlsSection(controlsData) {
   } = controlsData;
 
   return `
-    <div class="controls-section">
-      <div class="controls-title">Configuration & Controls</div>
-      
+    <details class="controls-section">
+      <summary class="controls-summary">
+        <div class="controls-title">Configuration & Controls</div>
+        <div class="controls-chevron">▸</div>
+      </summary>
+
       <div class="controls-grid">
         <div class="control-item">
           <span class="control-label">🔒 Child Lock</span>
@@ -50,6 +53,6 @@ export function createControlsSection(controlsData) {
           <span class="control-value">${runCompleted}</span>
         </div>
       </div>
-    </div>
+    </details>
   `;
 }

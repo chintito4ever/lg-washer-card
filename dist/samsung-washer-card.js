@@ -23,17 +23,17 @@ const baseStyles = `
       border: 1px solid rgba(0, 191, 214, 0.2);
     }
   }
-  
+
   .card-content {
-    padding: 24px;
+    padding: 18px;
   }
 
   .washer-header {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
     border-bottom: 2px solid var(--accent-color, rgb(0, 174, 199));
   }
   
@@ -334,6 +334,16 @@ const animationStyles = `
   }
 
   /* Animations */
+  .washer-icon.running {
+    animation: washerSway 2s ease-in-out infinite;
+    box-shadow: 0 6px 16px rgba(0, 174, 199, 0.25);
+  }
+
+  .washer-icon.completed {
+    animation: washerGlow 1.6s ease-in-out 2;
+    box-shadow: 0 6px 16px rgba(88, 214, 141, 0.25);
+  }
+
   .running .drum {
     animation: spin 2s linear infinite;
   }
@@ -370,6 +380,16 @@ const animationStyles = `
     0%, 100% { opacity: 0.8; transform: scale(1); }
     50% { opacity: 1; transform: scale(1.3); }
   }
+
+  @keyframes washerSway {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  @keyframes washerGlow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
 `;
 
 // Responsive styles for sensors and controls
@@ -377,8 +397,8 @@ const responsiveStyles = `
   .sensors-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 20px;
+    gap: 10px;
+    margin-top: 12px;
   }
   
   @media (max-width: 768px) {
@@ -397,9 +417,9 @@ const responsiveStyles = `
     background: rgba(0, 174, 199, 0.05);
     border: 1px solid rgba(0, 174, 199, 0.15);
     border-radius: 12px;
-    padding: 12px;
+    padding: 10px;
     transition: all 0.3s ease;
-    min-height: 80px;
+    min-height: 72px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -463,8 +483,8 @@ const responsiveStyles = `
   }
   
   .controls-section {
-    margin-top: 20px;
-    padding-top: 16px;
+    margin-top: 16px;
+    padding-top: 8px;
     border-top: 2px solid var(--accent-color, rgb(0, 174, 199));
   }
   
@@ -474,29 +494,53 @@ const responsiveStyles = `
     }
   }
   
+  .controls-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+    list-style: none;
+    padding: 6px 0;
+  }
+
+  .controls-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .controls-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--primary-text-color, rgb(55, 65, 81));
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .controls-title {
+      color: rgb(229, 231, 235);
+    }
+  }
+
+  .controls-chevron {
+    font-size: 14px;
+    color: var(--primary-text-color, rgb(55, 65, 81));
+    transition: transform 0.2s ease;
+  }
+
+  details[open] .controls-chevron {
+    transform: rotate(90deg);
+  }
+
   .controls-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    margin-top: 12px;
+    margin-top: 8px;
   }
-  
+
   @media (max-width: 480px) {
     .controls-grid {
       grid-template-columns: 1fr;
-    }
-  }
-  
-  .controls-title {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--primary-text-color, rgb(55, 65, 81));
-  }
-  
-  @media (prefers-color-scheme: dark) {
-    .controls-title {
-      color: rgb(229, 231, 235);
     }
   }
   
@@ -554,6 +598,64 @@ const responsiveStyles = `
       color: rgb(0, 191, 214);
     }
   }
+
+  .glance-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+  }
+
+  .glance-chip {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 8px;
+    row-gap: 2px;
+    padding: 10px;
+    background: rgba(0, 174, 199, 0.06);
+    border: 1px solid rgba(0, 174, 199, 0.15);
+    border-radius: 12px;
+    align-items: center;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .glance-chip {
+      background: rgba(0, 191, 214, 0.08);
+      border-color: rgba(0, 191, 214, 0.2);
+    }
+  }
+
+  .glance-icon {
+    grid-row: span 2;
+    font-size: 18px;
+    opacity: 0.8;
+  }
+
+  .glance-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--primary-text-color, rgb(55, 65, 81));
+    opacity: 0.75;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .glance-label {
+      color: rgb(229, 231, 235);
+    }
+  }
+
+  .glance-value {
+    font-weight: 700;
+    color: var(--primary-text-color, rgb(55, 65, 81));
+    font-size: 15px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .glance-value {
+      color: rgb(229, 231, 235);
+    }
+  }
 `;
 
 // Washing machine component HTML generator
@@ -597,6 +699,7 @@ function createSensorsGrid(sensorData) {
     : '';
 
   return `
+    ${glanceRow}
     <div class="sensors-grid">
       <div class="sensor-card">
         <div class="sensor-icon">⏳</div>
@@ -675,9 +778,12 @@ function createControlsSection(controlsData) {
   } = controlsData;
 
   return `
-    <div class="controls-section">
-      <div class="controls-title">Configuration & Controls</div>
-      
+    <details class="controls-section">
+      <summary class="controls-summary">
+        <div class="controls-title">Configuration & Controls</div>
+        <div class="controls-chevron">▸</div>
+      </summary>
+
       <div class="controls-grid">
         <div class="control-item">
           <span class="control-label">🔒 Child Lock</span>
@@ -714,7 +820,7 @@ function createControlsSection(controlsData) {
           <span class="control-value">${runCompleted}</span>
         </div>
       </div>
-    </div>
+    </details>
   `;
 }
 
@@ -947,6 +1053,7 @@ class SamsungWasherCard extends HTMLElement {
     const deviceDisplayName = Formatters.formatDeviceName(deviceName);
     const washerIcon = this.config.icon || '🧺';
     const iconHtml = Formatters.getIconHtml(washerIcon);
+    const washerIconStateClass = animationClass ? animationClass : '';
 
     // Prepare data for components
     const sensorsGridData = {
@@ -976,7 +1083,7 @@ class SamsungWasherCard extends HTMLElement {
     // Render the card
     this.content.innerHTML = `
       <div class="washer-header">
-        <div class="washer-icon">${iconHtml}</div>
+        <div class="washer-icon ${washerIconStateClass}">${iconHtml}</div>
         <div class="washer-title">
           <h2 class="washer-name">${deviceDisplayName}</h2>
           <p class="washer-status">

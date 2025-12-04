@@ -19,6 +19,7 @@ export function createSensorsGrid(sensorData) {
     : '';
 
   return `
+    ${glanceRow}
     <div class="sensors-grid">
       <div class="sensor-card">
         <div class="sensor-icon">⏳</div>

@@ -49,6 +49,7 @@ class SamsungWasherCard extends HTMLElement {
     const deviceDisplayName = Formatters.formatDeviceName(deviceName);
     const washerIcon = this.config.icon || '🧺';
     const iconHtml = Formatters.getIconHtml(washerIcon);
+    const washerIconStateClass = animationClass ? animationClass : '';
 
     // Prepare data for components
     const sensorsGridData = {
@@ -78,7 +79,7 @@ class SamsungWasherCard extends HTMLElement {
     // Render the card
     this.content.innerHTML = `
       <div class="washer-header">
-        <div class="washer-icon">${iconHtml}</div>
+        <div class="washer-icon ${washerIconStateClass}">${iconHtml}</div>
         <div class="washer-title">
           <h2 class="washer-name">${deviceDisplayName}</h2>
           <p class="washer-status">

@@ -18,17 +18,17 @@ export const baseStyles = `
       border: 1px solid rgba(0, 191, 214, 0.2);
     }
   }
-  
+
   .card-content {
-    padding: 24px;
+    padding: 18px;
   }
 
   .washer-header {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
     border-bottom: 2px solid var(--accent-color, rgb(0, 174, 199));
   }
   
