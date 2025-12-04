@@ -182,6 +182,16 @@ export const animationStyles = `
   }
 
   /* Animations */
+  .washer-icon.running {
+    animation: washerSway 2s ease-in-out infinite;
+    box-shadow: 0 6px 16px rgba(0, 174, 199, 0.25);
+  }
+
+  .washer-icon.completed {
+    animation: washerGlow 1.6s ease-in-out 2;
+    box-shadow: 0 6px 16px rgba(88, 214, 141, 0.25);
+  }
+
   .running .drum {
     animation: spin 2s linear infinite;
   }
@@ -217,5 +227,15 @@ export const animationStyles = `
   @keyframes completePulse {
     0%, 100% { opacity: 0.8; transform: scale(1); }
     50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  @keyframes washerSway {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  @keyframes washerGlow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
   }
 `;

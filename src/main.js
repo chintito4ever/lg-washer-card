@@ -34,12 +34,14 @@ class SamsungWasherCard extends HTMLElement {
     // Get all sensor data
     const sensorData = EntityHelpers.getAllSensorData(hass, deviceName);
     
-    // Format completion time
-    const formattedCompletionTime = Formatters.formatCompletionTime(sensorData.completionTime);
+    // Format times for display
+    const formattedRemainingTime = Formatters.formatDuration(sensorData.remainTime);
+    const formattedInitialTime = Formatters.formatDuration(sensorData.initialTime);
+    const formattedReserveTime = Formatters.formatDuration(sensorData.reserveTime);
     
     // Determine status classes and animations
     const statusClass = Formatters.getStatusClass(sensorData.machineState);
-    const isRecentlyCompleted = this.isRecentlyCompleted(hass);
+    const isRecentlyCompleted = this.isRecentlyCompleted(hass, sensorData);
     const animationClass = Formatters.getAnimationClass(sensorData.machineState, isRecentlyCompleted);
     const statusLightClass = Formatters.getStatusLightClass(sensorData.machineState, isRecentlyCompleted);
 
@@ -47,32 +49,37 @@ class SamsungWasherCard extends HTMLElement {
     const deviceDisplayName = Formatters.formatDeviceName(deviceName);
     const washerIcon = this.config.icon || '🧺';
     const iconHtml = Formatters.getIconHtml(washerIcon);
+    const washerIconStateClass = animationClass ? animationClass : '';
 
     // Prepare data for components
     const sensorsGridData = {
-      completionTime: formattedCompletionTime,
-      energy: sensorData.energy,
-      waterConsumption: sensorData.waterConsumption,
-      powerBinary: sensorData.powerBinary,
-      power: sensorData.power,
-      energySaved: sensorData.energySaved,
-      jobState: sensorData.jobState,
-      washerSelect: sensorData.washerSelect
+      remainingTime: formattedRemainingTime,
+      initialTime: formattedInitialTime,
+      reserveTime: formattedReserveTime,
+      currentCourse: sensorData.currentCourse,
+      previousState: sensorData.previousState,
+      spinSpeed: sensorData.spinSpeed,
+      waterTemp: sensorData.waterTemp,
+      dryLevel: sensorData.dryLevel,
+      tubCleanCount: sensorData.tubCleanCount,
+      errorState: sensorData.errorState,
+      errorMessage: sensorData.errorMessage
     };
 
     const controlsData = {
       childLock: sensorData.childLock,
-      remoteControl: sensorData.remoteControl,
-      bubbleSoak: sensorData.bubbleSoak,
-      detergentAmount: sensorData.detergentAmount,
-      rinseCycles: sensorData.rinseCycles,
-      spinLevel: sensorData.spinLevel
+      doorLock: sensorData.doorLock,
+      remoteStart: sensorData.remoteStart,
+      steam: sensorData.steam,
+      preWash: sensorData.preWash,
+      turboWash: sensorData.turboWash,
+      runCompleted: sensorData.runCompleted
     };
 
     // Render the card
     this.content.innerHTML = `
       <div class="washer-header">
-        <div class="washer-icon">${iconHtml}</div>
+        <div class="washer-icon ${washerIconStateClass}">${iconHtml}</div>
         <div class="washer-title">
           <h2 class="washer-name">${deviceDisplayName}</h2>
           <p class="washer-status">
@@ -87,22 +94,27 @@ class SamsungWasherCard extends HTMLElement {
     `;
   }
 
-  isRecentlyCompleted(hass) {
+  isRecentlyCompleted(hass, sensorData) {
     // Get the configured hours (default to 2 hours)
     const completeStatusHours = this.config.complete_status_for_x_hours || 2;
-    
+
+    // Direct completion flag from LG integrations
+    if (sensorData.runCompleted === 'On' || (sensorData.machineState || '').toLowerCase().includes('complete')) {
+      return true;
+    }
+
+    // Fallback to completion timestamp when available
     try {
-      // Get the raw completion time directly from hass
-      const completionTimeRaw = EntityHelpers.getEntityValue(hass, `sensor.${this.config.device_name || 'washing_machine'}_completion_time`, '');
+      const completionTimeRaw = sensorData.completionTime || EntityHelpers.getEntityValue(hass, `sensor.${this.config.device_name || 'washing_machine'}_completion_time`, '');
       if (!completionTimeRaw || completionTimeRaw === 'Unknown' || completionTimeRaw === 'unavailable') {
         return false;
       }
-      
+
       const completionDate = new Date(completionTimeRaw);
       const now = new Date();
       const diffMs = now.getTime() - completionDate.getTime();
       const diffHours = diffMs / (1000 * 60 * 60);
-      
+
       // If completion was in the past and within the configured hours, show as completed
       return diffMs > 0 && diffHours <= completeStatusHours;
     } catch (error) {

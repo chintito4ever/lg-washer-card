@@ -1,5 +1,13 @@
 // Entity helper functions for interacting with Home Assistant entities
 export class EntityHelpers {
+
+  static getAttribute(hass, entityId, attribute, defaultValue) {
+    const entity = hass.states[entityId];
+    if (entity && entity.attributes && entity.attributes[attribute] !== undefined) {
+      return entity.attributes[attribute];
+    }
+    return defaultValue;
+  }
   
   static getEntityValue(hass, entityId, defaultValue) {
     const entity = hass.states[entityId];
@@ -26,24 +34,46 @@ export class EntityHelpers {
   }
 
   static getAllSensorData(hass, deviceName) {
+    const baseSensorId = `sensor.${deviceName}`;
+
+    const getWithFallbacks = (primaryEntityId, attributeName, defaultValue = 'Unknown') => {
+      const entityValue = this.getEntityValue(hass, primaryEntityId, null);
+      if (entityValue !== null) {
+        return entityValue;
+      }
+      return this.getAttribute(hass, baseSensorId, attributeName, defaultValue);
+    };
+
+    const getBinaryWithFallbacks = (primaryEntityId, attributeName) => {
+      const entityValue = this.getBinaryState(hass, primaryEntityId);
+      if (entityValue !== 'Off') {
+        return entityValue;
+      }
+      const attributeValue = this.getAttribute(hass, baseSensorId, attributeName, 'Off');
+      return attributeValue === true || attributeValue === 'on' || attributeValue === 'On' ? 'On' : 'Off';
+    };
+
     return {
-      machineState: this.getEntityValue(hass, `sensor.${deviceName}_machine_state`, 'Unknown'),
-      jobState: this.getEntityValue(hass, `sensor.${deviceName}_job_state`, 'None'),
-      completionTime: this.getEntityValue(hass, `sensor.${deviceName}_completion_time`, 'Unknown'),
-      energy: this.getEntityValue(hass, `sensor.${deviceName}_energy`, '0'),
-      energyDiff: this.getEntityValue(hass, `sensor.${deviceName}_energy_difference`, '0'),
-      energySaved: this.getEntityValue(hass, `sensor.${deviceName}_energy_saved`, '0'),
-      power: this.getEntityValue(hass, `sensor.${deviceName}_power`, '0'),
-      powerEnergy: this.getEntityValue(hass, `sensor.${deviceName}_power_energy`, '0'),
-      waterConsumption: this.getEntityValue(hass, `sensor.${deviceName}_water_consumption`, '0'),
-      childLock: this.getBinaryState(hass, `binary_sensor.${deviceName}_child_lock`),
-      remoteControl: this.getBinaryState(hass, `binary_sensor.${deviceName}_remote_control`),
-      powerBinary: this.getBinaryState(hass, `binary_sensor.${deviceName}_power`),
-      bubbleSoak: this.getSwitchState(hass, `switch.${deviceName}_bubble_soak`),
-      detergentAmount: this.getEntityValue(hass, `select.${deviceName}_detergent_dispense_amount`, 'Extra'),
-      rinseCycles: this.getEntityValue(hass, `number.${deviceName}_rinse_cycles`, '2'),
-      spinLevel: this.getEntityValue(hass, `select.${deviceName}_spin_level`, '1400'),
-      washerSelect: this.getEntityValue(hass, `select.${deviceName}`, 'Unknown')
+      machineState: getWithFallbacks(`sensor.${deviceName}_run_state`, 'run_state'),
+      previousState: getWithFallbacks(`sensor.${deviceName}_pre_state`, 'pre_state', 'None'),
+      currentCourse: getWithFallbacks(`sensor.${deviceName}_current_course`, 'current_course'),
+      spinSpeed: getWithFallbacks(`sensor.${deviceName}_spin_speed`, 'spin_speed'),
+      waterTemp: getWithFallbacks(`sensor.${deviceName}_water_temp`, 'water_temp'),
+      dryLevel: getWithFallbacks(`sensor.${deviceName}_dry_level`, 'dry_level'),
+      tubCleanCount: getWithFallbacks(`sensor.${deviceName}_tubclean_count`, 'tubclean_count', '0'),
+      remainTime: getWithFallbacks(`sensor.${deviceName}_remain_time`, 'remain_time'),
+      initialTime: getWithFallbacks(`sensor.${deviceName}_initial_time`, 'initial_time'),
+      reserveTime: getWithFallbacks(`sensor.${deviceName}_reserve_time`, 'reserve_time'),
+      completionTime: getWithFallbacks(`sensor.${deviceName}_completion_time`, 'completion_time', ''),
+      doorLock: getBinaryWithFallbacks(`binary_sensor.${deviceName}_door_lock`, 'door_lock'),
+      childLock: getBinaryWithFallbacks(`binary_sensor.${deviceName}_child_lock`, 'child_lock'),
+      remoteStart: getBinaryWithFallbacks(`binary_sensor.${deviceName}_remote_start`, 'remote_start'),
+      steam: getBinaryWithFallbacks(`binary_sensor.${deviceName}_steam`, 'steam'),
+      preWash: getBinaryWithFallbacks(`binary_sensor.${deviceName}_pre_wash`, 'pre_wash'),
+      turboWash: getBinaryWithFallbacks(`binary_sensor.${deviceName}_turbo_wash`, 'turbo_wash'),
+      runCompleted: getBinaryWithFallbacks(`binary_sensor.${deviceName}_run_completed`, 'run_completed'),
+      errorState: getBinaryWithFallbacks(`binary_sensor.${deviceName}_error_state`, 'error_state'),
+      errorMessage: getWithFallbacks(`sensor.${deviceName}_error_message`, 'error_message', 'None')
     };
   }
 }
