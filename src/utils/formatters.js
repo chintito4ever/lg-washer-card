@@ -44,6 +44,25 @@ export class Formatters {
     }
   }
 
+  static formatDuration(timeStr) {
+    if (!timeStr || timeStr === 'Unknown' || timeStr === 'unavailable') {
+      return 'Unknown';
+    }
+
+    // LG reports time as H:MM
+    const [hoursStr, minutesStr] = timeStr.split(':');
+    const hours = parseInt(hoursStr, 10);
+    const minutes = parseInt(minutesStr, 10);
+
+    if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+      return timeStr;
+    }
+
+    const hourLabel = hours > 0 ? `${hours}h ` : '';
+    const minuteLabel = `${minutes}m`;
+    return `${hourLabel}${minuteLabel}`.trim();
+  }
+
   static getIconHtml(icon) {
     // Determine if it's an MDI icon or emoji
     return icon.includes(':') 
@@ -52,17 +71,22 @@ export class Formatters {
   }
 
   static getStatusClass(machineState) {
-    if (machineState.toLowerCase().includes('running')) {
+    const normalizedState = machineState.toLowerCase();
+
+    if (normalizedState.includes('run') || normalizedState.includes('wash') || normalizedState.includes('spin')) {
       return 'status-running';
-    } else if (machineState.toLowerCase().includes('stopped')) {
+    } else if (normalizedState.includes('stopped') || normalizedState.includes('off')) {
       return 'status-stopped';
+    } else if (normalizedState.includes('complete')) {
+      return 'status-completed';
     } else {
       return 'status-idle';
     }
   }
 
   static getAnimationClass(machineState, isRecentlyCompleted) {
-    if (machineState.toLowerCase().includes('running') || machineState.toLowerCase().includes('wash')) {
+    const normalizedState = machineState.toLowerCase();
+    if (normalizedState.includes('running') || normalizedState.includes('wash') || normalizedState.includes('spin')) {
       return 'running';
     } else if (isRecentlyCompleted) {
       return 'completed';
@@ -72,7 +96,8 @@ export class Formatters {
   }
 
   static getStatusLightClass(machineState, isRecentlyCompleted) {
-    if (machineState.toLowerCase().includes('running') || machineState.toLowerCase().includes('wash')) {
+    const normalizedState = machineState.toLowerCase();
+    if (normalizedState.includes('running') || normalizedState.includes('wash') || normalizedState.includes('spin')) {
       return 'running';
     } else if (isRecentlyCompleted) {
       return 'completed';

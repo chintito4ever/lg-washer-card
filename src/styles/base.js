@@ -106,7 +106,11 @@ export const baseStyles = `
   .status-idle {
     background: var(--accent-color, rgb(0, 174, 199));
   }
-  
+
+  .status-completed {
+    background: var(--success-color, rgb(76, 201, 123));
+  }
+
   @media (prefers-color-scheme: dark) {
     .status-running {
       background: rgb(255, 171, 64);
@@ -117,13 +121,23 @@ export const baseStyles = `
     .status-idle {
       background: rgb(0, 191, 214);
     }
+
+    .status-completed {
+      background: rgb(88, 214, 141);
+    }
   }
 
   .unavailable {
     opacity: 0.5;
     color: var(--warning-color, rgb(255, 179, 71));
   }
-  
+
+  .sensor-subtext {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 4px;
+  }
+
   @media (prefers-color-scheme: dark) {
     .unavailable {
       color: rgb(255, 171, 64);

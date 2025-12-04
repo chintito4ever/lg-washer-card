@@ -1,69 +1,85 @@
 // Sensors grid component HTML generator
 export function createSensorsGrid(sensorData) {
   const {
-    completionTime,
-    energy,
-    waterConsumption,
-    powerBinary,
-    power,
-    energySaved,
-    jobState,
-    washerSelect
+    remainingTime,
+    initialTime,
+    reserveTime,
+    currentCourse,
+    previousState,
+    spinSpeed,
+    waterTemp,
+    dryLevel,
+    tubCleanCount,
+    errorState,
+    errorMessage
   } = sensorData;
 
-  const programCard = washerSelect !== 'Unknown' ? `
-    <div class="sensor-card">
-      <div class="sensor-icon">⚙️</div>
-      <div class="sensor-label">Program</div>
-      <div class="sensor-value">${washerSelect}</div>
-    </div>
-  ` : '';
+  const errorDetails = errorState === 'On' && errorMessage !== 'None'
+    ? `<div class="sensor-subtext">${errorMessage}</div>`
+    : '';
 
   return `
     <div class="sensors-grid">
       <div class="sensor-card">
-        <div class="sensor-icon">⏱️</div>
-        <div class="sensor-label">Completion Time</div>
-        <div class="sensor-value">${completionTime}</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">⚡</div>
-        <div class="sensor-label">Energy Used</div>
-        <div class="sensor-value">${energy} kWh</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">💧</div>
-        <div class="sensor-label">Water Used</div>
-        <div class="sensor-value">${waterConsumption} L</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">🔌</div>
-        <div class="sensor-label">Power Status</div>
-        <div class="sensor-value">${powerBinary}</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">⚡</div>
-        <div class="sensor-label">Current Power</div>
-        <div class="sensor-value">${power} W</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">💚</div>
-        <div class="sensor-label">Energy Saved</div>
-        <div class="sensor-value">${energySaved} kWh</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">👁️</div>
-        <div class="sensor-label">Job State</div>
-        <div class="sensor-value">${jobState}</div>
+        <div class="sensor-icon">⏳</div>
+        <div class="sensor-label">Remaining Time</div>
+        <div class="sensor-value">${remainingTime}</div>
       </div>
 
-      ${programCard}
+      <div class="sensor-card">
+        <div class="sensor-icon">🕒</div>
+        <div class="sensor-label">Initial Time</div>
+        <div class="sensor-value">${initialTime}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">⌛</div>
+        <div class="sensor-label">Delay Start</div>
+        <div class="sensor-value">${reserveTime}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">⚙️</div>
+        <div class="sensor-label">Current Cycle</div>
+        <div class="sensor-value">${currentCourse}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">👁️</div>
+        <div class="sensor-label">Previous State</div>
+        <div class="sensor-value">${previousState}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">🌪️</div>
+        <div class="sensor-label">Spin Speed</div>
+        <div class="sensor-value">${spinSpeed}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">🌡️</div>
+        <div class="sensor-label">Water Temp</div>
+        <div class="sensor-value">${waterTemp}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">🔥</div>
+        <div class="sensor-label">Dry Level</div>
+        <div class="sensor-value">${dryLevel}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">🧼</div>
+        <div class="sensor-label">Cycles Since Tub Clean</div>
+        <div class="sensor-value">${tubCleanCount}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">🚨</div>
+        <div class="sensor-label">Error State</div>
+        <div class="sensor-value">${errorState}</div>
+        ${errorDetails}
+      </div>
     </div>
   `;
 }
