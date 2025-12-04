@@ -105,11 +105,7 @@ class SamsungWasherCard extends HTMLElement {
 
     // Fallback to completion timestamp when available
     try {
-      const completionTimeRaw = sensorData.completionTime || EntityHelpers.getEntityValue(
-        hass,
-        `sensor.${this.config.device_name || this.config.entity_prefix || 'washing_machine'}_completion_time`,
-        ''
-      );
+      const completionTimeRaw = sensorData.completionTime || EntityHelpers.getEntityValue(hass, `sensor.${this.config.device_name || 'washing_machine'}_completion_time`, '');
       if (!completionTimeRaw || completionTimeRaw === 'Unknown' || completionTimeRaw === 'unavailable') {
         return false;
       }
