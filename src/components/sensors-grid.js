@@ -18,28 +18,15 @@ export function createSensorsGrid(sensorData) {
     ? `<div class="sensor-subtext">${errorMessage}</div>`
     : '';
 
-  const glanceItems = [
-    { icon: '⏳', label: 'Remaining', value: remainingTime },
-    { icon: '⚙️', label: 'Cycle', value: currentCourse },
-    { icon: '🌪️', label: 'Spin', value: spinSpeed },
-    { icon: '🌡️', label: 'Temp', value: waterTemp },
-  ];
-
-  const glanceRow = `
-    <div class="glance-row">
-      ${glanceItems.map(item => `
-        <div class="glance-chip">
-          <div class="glance-icon">${item.icon}</div>
-          <div class="glance-label">${item.label}</div>
-          <div class="glance-value">${item.value}</div>
-        </div>
-      `).join('')}
-    </div>
-  `;
-
   return `
     ${glanceRow}
     <div class="sensors-grid">
+      <div class="sensor-card">
+        <div class="sensor-icon">⏳</div>
+        <div class="sensor-label">Remaining Time</div>
+        <div class="sensor-value">${remainingTime}</div>
+      </div>
+
       <div class="sensor-card">
         <div class="sensor-icon">🕒</div>
         <div class="sensor-label">Initial Time</div>
@@ -53,9 +40,27 @@ export function createSensorsGrid(sensorData) {
       </div>
 
       <div class="sensor-card">
+        <div class="sensor-icon">⚙️</div>
+        <div class="sensor-label">Current Cycle</div>
+        <div class="sensor-value">${currentCourse}</div>
+      </div>
+
+      <div class="sensor-card">
         <div class="sensor-icon">👁️</div>
         <div class="sensor-label">Previous State</div>
         <div class="sensor-value">${previousState}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">🌪️</div>
+        <div class="sensor-label">Spin Speed</div>
+        <div class="sensor-value">${spinSpeed}</div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-icon">🌡️</div>
+        <div class="sensor-label">Water Temp</div>
+        <div class="sensor-value">${waterTemp}</div>
       </div>
 
       <div class="sensor-card">
